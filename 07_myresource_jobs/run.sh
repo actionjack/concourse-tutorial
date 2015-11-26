@@ -17,6 +17,6 @@ fi
 pushd $DIR
   yes y | fly -t ${fly_target} set-pipeline --config pipeline.yml --pipeline ${pipeline}
   fly unpause-pipeline --pipeline ${pipeline}
-  curl $ATC_URL/pipelines/${pipelinename}/jobs/job-hello-world/builds -X POST
-  fly -t ${fly_target} watch -j ${pipelinename}/job-hello-world
+  curl $ATC_URL/pipelines/${pipeline}/jobs/job-hello-world/builds -X POST
+  fly -t ${fly_target} watch -j ${pipeline}/job-hello-world
 popd

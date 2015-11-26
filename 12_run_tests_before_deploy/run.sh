@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+export pipeline=${pipeline:-12_run_tests_before_deploy}
 export ATC_URL=${ATC_URL:-"http://192.168.100.4:8080"}
 export fly_target=${fly_target:-tutorial}
 echo "Concourse API target ${fly_target}"
@@ -23,7 +24,8 @@ if [[ ! -f ${stub} ]]; then
 fi
 
 pushd $DIR
-  yes y | fly -t ${fly_target} configure -c pipeline.yml --vars-from $stub
+  yes y | fly -t ${fly_target} set-pipeline --config pipeline.yml --pipeline ${pipeline} --load-vars-from ${stub}
+  fly unpause-pipeline --pipeline ${pipeline}
   curl $ATC_URL/pipelines/main/jobs/job-test-deploy-app/builds -X POST
-  fly -t ${fly_target} watch -j job-test-deploy-app
+  fly -t ${fly_target} watch -j ${pipeline}/job-test-deploy-app
 popd

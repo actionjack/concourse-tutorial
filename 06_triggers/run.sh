@@ -10,6 +10,8 @@ echo "Concourse Pipeline ${pipeline}"
 echo "Tutorial $(basename $DIR)"
 
 pushd $DIR
-  yes y | fly -t ${fly_target} configure -c pipeline.yml --paused=false ${pipeline} 
+  # yes y | fly -t ${fly_target} configure -c pipeline.yml --paused=false ${pipeline}
+  yes y | fly -t ${fly_target} set-pipeline --config pipeline.yml --pipeline ${pipeline}
+  fly unpause-pipeline --pipeline ${pipeline}
   echo open in browser $ATC_URL
 popd

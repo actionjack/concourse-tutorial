@@ -20,7 +20,8 @@ fi
 
 
 pushd $DIR
-  yes y | fly -t ${fly_target} configure -c pipeline-${stage}.yml
-  curl $ATC_URL/pipelines/main/jobs/job-with-inputs/builds -X POST
-  fly -t ${fly_target} watch -j job-with-inputs
+  yes y | fly -t ${fly_target} set-pipeline --config pipeline-${stage}.yml --pipeline ${stage}
+  fly unpause-pipeline --pipeline ${stage}
+  curl $ATC_URL/pipelines/${stage}/jobs/job-with-inputs/builds -X POST
+  fly -t ${fly_target} watch -j ${stage}/job-with-inputs
 popd
